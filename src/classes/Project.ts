@@ -73,9 +73,12 @@ export class Project implements IProject {
       </div>
     </div>
     <div class="todos-container"></div>`
-    
-    this.ui.querySelector('.project-icon')?.addEventListener('click', () => this.showEditForm())
+    this.attachEditHandler()
     this.updateTodosUI()
+  }
+
+  attachEditHandler() {
+    this.ui.querySelector('.project-icon')?.addEventListener('click', () => this.showEditForm())
   }
 
   addTodo(text: string, status: TodoStatus = "pending"): ITodo {
@@ -199,6 +202,7 @@ export class Project implements IProject {
         </div>
         <div class="todos-container"></div>
       `
+      this.attachEditHandler()
       this.updateTodosUI()
     }
   }
