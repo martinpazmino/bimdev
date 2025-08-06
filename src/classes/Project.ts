@@ -71,8 +71,11 @@ export class Project implements IProject {
         <p style="color: #969696;">Estimated Progress</p>
         <p>${this.progress * 100}%</p>
       </div>
-    </div>`
+    </div>
+    <div class="todos-container"></div>`
+    
     this.ui.querySelector('.project-icon')?.addEventListener('click', () => this.showEditForm())
+    this.updateTodosUI()
   }
 
   addTodo(text: string, status: TodoStatus = "pending"): ITodo {
