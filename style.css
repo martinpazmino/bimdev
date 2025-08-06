@@ -34,7 +34,6 @@ body {
   color: #fff;
 }
 
-
 /* General Styles */
 
 h2 {
@@ -88,7 +87,7 @@ button:hover {
 }
 
 #company-logo {
-	height: 65px;
+  height: 65px;
 }
 
 #nav-buttons {
@@ -135,7 +134,7 @@ header {
   display: flex;
   column-gap: 20px;
   padding: 15px 20px;
-  align-items: center; 
+  align-items: center;
   justify-content: start;
   border-bottom: 2px solid #3b3c3f;
   height: 60px;
@@ -176,12 +175,18 @@ header {
   background-color: var(--primary);
 }
 
+/* Project icon styling */
+.project-icon {
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
 /* Form Styles */
 
 dialog {
-  background-color: transparent; 
+  background-color: transparent;
   border: none;
-	margin: auto;
+  margin: auto;
 }
 
 dialog::backdrop {
@@ -190,21 +195,21 @@ dialog::backdrop {
 }
 
 form {
-  width: 450px; 
-  border-radius: 10px; 
+  width: 450px;
+  border-radius: 10px;
   background-color: var(--background-100);
   color: white;
 }
 
 form h2 {
-  padding: 20px; 
+  padding: 20px;
   border-bottom: 2px solid var(--background-200);
 }
 
 form .input-list {
-  display: flex; 
-  flex-direction: column; 
-  padding: 20px; 
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
   row-gap: 25px;
 }
 
@@ -224,10 +229,10 @@ label {
 }
 
 input, textarea, select {
-  color: white; 
-	background-color: var(--background-200);
-  padding: 15px; 
-  border-radius: 8px; 
+  color: white;
+  background-color: var(--background-200);
+  padding: 15px;
+  border-radius: 8px;
   border: none;
   font-size: var(--font-base);
 }
@@ -254,14 +259,14 @@ input:focus, textarea:focus, select:focus {
 }
 
 .btn-secondary {
-  background-color: transparent; 
-  outline: 2px solid #969696; 
-  width: 100px; 
+  background-color: transparent;
+  outline: 2px solid #969696;
+  width: 100px;
   text-align: center;
 }
 
 .btn-secondary:hover {
-  background-color: var(--primary); 
+  background-color: var(--primary);
   outline: none;
 }
 
@@ -270,8 +275,130 @@ input:focus, textarea:focus, select:focus {
   background-color: var(--background-200);
   border-radius: 10px;
   cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.todo-item:hover {
-  background-color: var(--primary);
+.todo-item.pending {
+  background-color: #ffcccc; /* Light red for pending */
+}
+
+.todo-item.done {
+  background-color: #ccffcc; /* Light green for done */
+}
+
+/* Details Page Styles */
+.details-column {
+  display: flex;
+  flex-direction: column;
+  row-gap: 30px;
+}
+
+.card-header-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 30px;
+  margin-bottom: 30px;
+}
+
+.card-content-details {
+  padding: 0 30px;
+}
+
+.project-info h5 {
+  margin-bottom: 10px;
+}
+
+.project-properties {
+  display: flex;
+  column-gap: 30px;
+  padding: 30px 0;
+  justify-content: space-between;
+}
+
+.property-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.property-label {
+  color: #969696;
+  font-size: var(--font-sm);
+  margin-bottom: 5px;
+}
+
+.progress-bar {
+  background-color: #404040;
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  background-color: green;
+  padding: 4px 0;
+  text-align: center;
+  color: white;
+}
+
+/* ToDo Section Styles */
+.todo-section {
+  flex-grow: 1;
+}
+
+.todo-header {
+  padding: 20px 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.todo-actions {
+  display: flex;
+  align-items: center;
+  column-gap: 20px;
+}
+
+.search-container {
+  display: flex;
+  align-items: center;
+  column-gap: 10px;
+}
+
+.search-container input {
+  width: 100%;
+  padding: 8px;
+  background-color: var(--background-200);
+  border: none;
+  border-radius: 8px;
+  color: white;
+}
+
+.search-container input:focus {
+  outline: 2px solid var(--primary);
+}
+
+.todo-list {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 30px;
+  row-gap: 20px;
+}
+
+.todo-content {
+  display: flex;
+  column-gap: 15px;
+  align-items: center;
+}
+
+.todo-icon {
+  padding: 10px;
+  background-color: #686868;
+  border-radius: 10px;
+}
+
+.todo-date {
+  text-wrap: nowrap;
+  margin-left: 10px;
 }
