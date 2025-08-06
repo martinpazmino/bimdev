@@ -90,10 +90,12 @@ if (importProjectsBtn) {
 const addTodoBtn = document.getElementById("add-todo-btn")
 if (addTodoBtn) {
   addTodoBtn.addEventListener("click", () => {
-    const project = projectsManager.list[0] // Example: use first project, adjust logic as needed
-    if (project) {
-      const todoText = prompt("Enter ToDo text:")
-      if (todoText) project.addTodo(todoText)
+    const project = projectsManager.getSelectedProject()
+    if (!project) {
+      alert("Please select a project first")
+      return
     }
+    const todoText = prompt("Enter ToDo text:")
+    if (todoText) project.addTodo(todoText)
   })
 }

@@ -3,6 +3,7 @@ import { Project, IProject, TodoStatus, ITodo } from "./Project";
 export class ProjectsManager {
   list: Project[] = [];
   private ui: HTMLElement;
+  private selectedProjectId: string | null = null;
 
   constructor(container: HTMLElement) {
     this.ui = container;
@@ -27,7 +28,7 @@ export class ProjectsManager {
 
       projectsPage.style.display = "none";
       detailsPage.style.display = "flex";
-
+      this.selectedProjectId = project.id;
       this.setDetailsPage(project);
     });
 
@@ -78,6 +79,11 @@ export class ProjectsManager {
     if (!project) return;
     project.ui.remove();
     this.list = this.list.filter(p => p.id !== id);
+  }
+
+  getSelectedProject(): Project | undefined {
+    if (!this.selectedProjectId) return undefined;
+    return this.getProject(this.selectedProjectId);
   }
 
   getProject(id: string): Project | undefined {
