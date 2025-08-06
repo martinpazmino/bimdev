@@ -1,6 +1,14 @@
 import { IProject, ProjectStatus, UserRole } from "./classes/Project"
 import { ProjectsManager } from "./classes/ProjectsManager"
 
+function isProjectStatus(value: FormDataEntryValue | null): value is ProjectStatus {
+  return value === "pending" || value === "active" || value === "finished"
+}
+
+function isUserRole(value: FormDataEntryValue | null): value is UserRole {
+  return value === "architect" || value === "engineer" || value === "developer"
+}
+
 function showModal(id: string) {
   const modal = document.getElementById(id)
   if (modal && modal instanceof HTMLDialogElement) {
@@ -36,11 +44,17 @@ if (projectForm && projectForm instanceof HTMLFormElement) {
   projectForm.addEventListener("submit", (e) => {
     e.preventDefault()
     const formData = new FormData(projectForm)
+    const status = formData.get("status")
+    const role = formData.get("userRole")
+    if (!isProjectStatus(status) || !isUserRole(role)) {
+      alert("Invalid role or status")
+      return
+    }
     const projectData: IProject = {
       name: formData.get("name") as string,
       description: formData.get("description") as string,
-      status: formData.get("status") as ProjectStatus,
-      userRole: formData.get("userRole") as UserRole,
+      status,
+      userRole: role,
       finishDate: new Date(formData.get("finishDate") as string || new Date().toISOString().split('T')[0])
     }
     try {
