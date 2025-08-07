@@ -1,4 +1,4 @@
-import { IProject, ProjectStatus, UserRole } from "./classes/Project"
+import { IProject, ProjectStatus, UserRole, TodoStatus } from "./classes/Project"
 import { ProjectsManager } from "./classes/ProjectsManager"
 
 function isProjectStatus(value: FormDataEntryValue | null): value is ProjectStatus {
@@ -96,6 +96,31 @@ if (addTodoBtn) {
       return
     }
     const todoText = prompt("Enter ToDo text:")
-    if (todoText) project.addTodo(todoText)
+    if (todoText) {
+      const statusInput = prompt("Enter ToDo status (pending/done):", "pending")
+      const status: TodoStatus = statusInput === 'done' ? 'done' : 'pending'
+      project.addTodo(todoText, status)
+      projectsManager.setDetailsPage(project)
+    }
   })
 }
+
+// Edit Project from details page
+const editProjectBtn = document.getElementById("edit-project-btn")
+if (editProjectBtn) {
+  editProjectBtn.addEventListener('click', () => {
+    const project = projectsManager.getSelectedProject()
+    if (project) {
+      project.showEditForm()
+    }
+  })
+}
+
+// Keep details page in sync when project updates
+document.addEventListener('projectUpdated', (e) => {
+  const projectId = (e as CustomEvent<string>).detail
+  const project = projectsManager.getProject(projectId)
+  if (project && projectsManager.getSelectedProject()?.id === projectId) {
+    projectsManager.setDetailsPage(project)
+  }
+})

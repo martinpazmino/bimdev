@@ -38,7 +38,7 @@ export class ProjectsManager {
     return project;
   }
 
-  private setDetailsPage(project: Project): void {
+  setDetailsPage(project: Project): void {
     const cardTitle = document.querySelector("[data-project-info='cardTitle']") as HTMLElement;
     const cardDescription = document.querySelector("[data-project-info='cardDescription']") as HTMLElement;
     const cardStatus = document.querySelector("[data-project-info='cardStatus']") as HTMLElement;
@@ -55,7 +55,7 @@ export class ProjectsManager {
     if (cardProgress) cardProgress.textContent = `${project.progress * 100}%`;
     if (todosContainer) {
       todosContainer.innerHTML = project.todos.map(todo => `
-        <div class="todo-item" data-todo-id="${todo.id}">
+        <div class="todo-item ${todo.status}" data-todo-id="${todo.id}">
           <span>${todo.text}</span>
           <select class="todo-status" data-todo-id="${todo.id}">
             <option value="pending" ${todo.status === "pending" ? "selected" : ""}>Pending</option>
@@ -68,7 +68,15 @@ export class ProjectsManager {
           const todoId = (e.target as HTMLSelectElement).getAttribute('data-todo-id');
           const status = (e.target as HTMLSelectElement).value as TodoStatus;
           const todo = project.todos.find(t => t.id === todoId);
-          if (todo) todo.status = status;
+          if (todo) {
+            todo.status = status;
+            const todoItem = todosContainer.querySelector(`.todo-item[data-todo-id="${todoId}"]`);
+            if (todoItem) {
+              todoItem.classList.remove('pending', 'done');
+              todoItem.classList.add(status);
+            }
+            project.updateTodosUI();
+          }
         });
       });
     }
@@ -148,6 +156,7 @@ export class ProjectsManager {
                 existingProject.progress = item.progress || 0;
                 existingProject.todos = item.todos || [];
                 existingProject.updateUI();
+                document.dispatchEvent(new CustomEvent('projectUpdated', { detail: existingProject.id }))
               } else {
                 this.newProject(projectData);
               }
