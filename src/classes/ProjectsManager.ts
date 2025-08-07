@@ -45,7 +45,7 @@ export class ProjectsManager {
     const cardRole = document.querySelector("[data-project-info='cardRole']") as HTMLElement;
     const cardCost = document.querySelector("[data-project-info='cardCost']") as HTMLElement;
     const cardProgress = document.querySelector("[data-project-info='cardProgress']") as HTMLElement;
-    const todosContainer = document.querySelector(".todos-container") as HTMLElement;
+    const todoList = document.querySelector(".todo-list") as HTMLElement;
 
     if (cardTitle) cardTitle.textContent = project.name;
     if (cardDescription) cardDescription.textContent = project.description;
@@ -53,8 +53,8 @@ export class ProjectsManager {
     if (cardRole) cardRole.textContent = project.userRole;
     if (cardCost) cardCost.textContent = `$${project.cost}`;
     if (cardProgress) cardProgress.textContent = `${project.progress * 100}%`;
-    if (todosContainer) {
-      todosContainer.innerHTML = project.todos.map(todo => `
+    if (todoList) {
+      todoList.innerHTML = project.todos.map(todo => `
         <div class="todo-item ${todo.status}" data-todo-id="${todo.id}">
           <span>${todo.text}</span>
           <select class="todo-status" data-todo-id="${todo.id}">
@@ -63,14 +63,14 @@ export class ProjectsManager {
           </select>
         </div>
       `).join('');
-      todosContainer.querySelectorAll('.todo-status').forEach(select => {
+      todoList.querySelectorAll('.todo-status').forEach(select => {
         select.addEventListener('change', (e) => {
           const todoId = (e.target as HTMLSelectElement).getAttribute('data-todo-id');
           const status = (e.target as HTMLSelectElement).value as TodoStatus;
           const todo = project.todos.find(t => t.id === todoId);
           if (todo) {
             todo.status = status;
-            const todoItem = todosContainer.querySelector(`.todo-item[data-todo-id="${todoId}"]`);
+          const todoItem = todoList.querySelector(`.todo-item[data-todo-id="${todoId}"]`);
             if (todoItem) {
               todoItem.classList.remove('pending', 'done');
               todoItem.classList.add(status);
