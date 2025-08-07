@@ -1,8 +1,8 @@
 import { v4 as uuidv4 } from 'uuid'
 
-export type ProjectStatus = "pending" | "active" | "finished"
-export type UserRole = "architect" | "engineer" | "developer"
-export type TodoStatus = "pending" | "done"
+export type ProjectStatus = 'pending' | 'active' | 'finished'
+export type UserRole = 'architect' | 'engineer' | 'developer'
+export type TodoStatus = 'pending' | 'done'
 
 export interface ITodo {
   id: string
@@ -35,7 +35,8 @@ export class Project implements IProject {
     this.description = data.description
     this.status = data.status
     this.userRole = data.userRole
-    this.finishDate = data.finishDate || new Date() // Default to current date if not provided
+    // Provide a default date if none is specified
+    this.finishDate = data.finishDate || new Date()
     this.id = uuidv4()
     this.setUI()
   }
@@ -44,8 +45,9 @@ export class Project implements IProject {
     if (this.ui) { return }
     const colors = ['#ca8134', '#029AE0', '#50B6E6', '#073044', '#415A66', '#017CB3']
     const randomColor = colors[Math.floor(Math.random() * colors.length)]
-    this.ui = document.createElement("div")
-    this.ui.className = "project-card"
+    this.ui = document.createElement('div')
+    this.ui.className = 'project-card'
+    // Icon shows first two letters; uppercase handled via CSS
     this.ui.innerHTML = `
     <div class="card-header">
       <p class="project-icon" style="background-color: ${randomColor}; padding: 10px; border-radius: 8px; aspect-ratio: 1;">${this.name.slice(0, 2)}</p>
@@ -81,10 +83,11 @@ export class Project implements IProject {
     this.ui.querySelector('.project-icon')?.addEventListener('click', () => this.showEditForm())
   }
 
-  addTodo(text: string, status: TodoStatus = "pending"): ITodo {
+  addTodo(text: string, status: TodoStatus = 'pending'): ITodo {
     const todo = { id: uuidv4(), text, status }
     this.todos.push(todo)
     this.updateTodosUI()
+    document.dispatchEvent(new CustomEvent('projectUpdated', { detail: this.id }))
     return todo
   }
 
@@ -92,11 +95,11 @@ export class Project implements IProject {
     const todosContainer = this.ui.querySelector('.todos-container')
     if (todosContainer) {
       todosContainer.innerHTML = this.todos.map(todo => `
-        <div class="todo-item" data-todo-id="${todo.id}">
+        <div class="todo-item ${todo.status}" data-todo-id="${todo.id}">
           <span>${todo.text}</span>
           <select class="todo-status" data-todo-id="${todo.id}">
-            <option value="pending" ${todo.status === "pending" ? "selected" : ""}>Pending</option>
-            <option value="done" ${todo.status === "done" ? "selected" : ""}>Done</option>
+            <option value="pending" ${todo.status === 'pending' ? 'selected' : ''}>Pending</option>
+            <option value="done" ${todo.status === 'done' ? 'selected' : ''}>Done</option>
           </select>
         </div>
       `).join('')
@@ -105,7 +108,15 @@ export class Project implements IProject {
           const todoId = (e.target as HTMLSelectElement).getAttribute('data-todo-id')
           const status = (e.target as HTMLSelectElement).value as TodoStatus
           const todo = this.todos.find(t => t.id === todoId)
-          if (todo) todo.status = status
+          if (todo) {
+            todo.status = status
+            const todoItem = this.ui.querySelector(`.todo-item[data-todo-id="${todoId}"]`)
+            if (todoItem) {
+              todoItem.classList.remove('pending', 'done')
+              todoItem.classList.add(status)
+            }
+            document.dispatchEvent(new CustomEvent('projectUpdated', { detail: this.id }))
+          }
         })
       })
     }
@@ -128,17 +139,17 @@ export class Project implements IProject {
           <div class="form-field-container">
             <label for="edit-status">Status</label>
             <select id="edit-status" name="edit-status">
-              <option value="pending" ${this.status === "pending" ? "selected" : ""}>Pending</option>
-              <option value="active" ${this.status === "active" ? "selected" : ""}>Active</option>
-              <option value="finished" ${this.status === "finished" ? "selected" : ""}>Finished</option>
+              <option value="pending" ${this.status === 'pending' ? 'selected' : ''}>Pending</option>
+              <option value="active" ${this.status === 'active' ? 'selected' : ''}>Active</option>
+              <option value="finished" ${this.status === 'finished' ? 'selected' : ''}>Finished</option>
             </select>
           </div>
           <div class="form-field-container">
             <label for="edit-userRole">Role</label>
             <select id="edit-userRole" name="edit-userRole">
-              <option value="architect" ${this.userRole === "architect" ? "selected" : ""}>Architect</option>
-              <option value="engineer" ${this.userRole === "engineer" ? "selected" : ""}>Engineer</option>
-              <option value="developer" ${this.userRole === "developer" ? "selected" : ""}>Developer</option>
+              <option value="architect" ${this.userRole === 'architect' ? 'selected' : ''}>Architect</option>
+              <option value="engineer" ${this.userRole === 'engineer' ? 'selected' : ''}>Engineer</option>
+              <option value="developer" ${this.userRole === 'developer' ? 'selected' : ''}>Developer</option>
             </select>
           </div>
           <div class="form-field-container">
@@ -162,6 +173,7 @@ export class Project implements IProject {
       this.userRole = formData.get('edit-userRole') as UserRole
       this.finishDate = new Date(formData.get('edit-finishDate') as string || new Date())
       this.updateUI()
+      document.dispatchEvent(new CustomEvent('projectUpdated', { detail: this.id }))
       dialog.close()
       dialog.remove()
     })
@@ -174,9 +186,11 @@ export class Project implements IProject {
 
   updateUI() {
     if (this.ui) {
+      const icon = this.ui.querySelector('.project-icon') as HTMLElement | null
+      const bgColor = icon ? icon.style.backgroundColor : '#ca8134'
       this.ui.innerHTML = `
         <div class="card-header">
-          <p class="project-icon" style="background-color: ${this.ui.querySelector('.project-icon')?.getAttribute('style')?.match(/background-color: #\w+/)?.[0] || '#ca8134'}; padding: 10px; border-radius: 8px; aspect-ratio: 1;">${this.name.slice(0, 2)}</p>
+          <p class="project-icon" style="background-color: ${bgColor}; padding: 10px; border-radius: 8px; aspect-ratio: 1;">${this.name.slice(0, 2)}</p>
           <div>
             <h5>${this.name}</h5>
             <p>${this.description}</p>
